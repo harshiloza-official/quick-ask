@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Ask</title>
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col font-['Inter']">
+
+<!-- Header -->
+<header class="sticky top-0 z-50 p-4 text-center text-xl font-semibold text-white
+                   bg-gradient-to-r from-indigo-500 to-blue-500 shadow-lg">
+    🚀 QuickAsk - Ask Anything Instantly!
+</header>
+
+<!-- Main Container -->
+<div class="flex h-full">
+
+
+    <!-- Chat Area -->
+    <main class="flex flex-col flex-1 p-6 space-y-4">
+
+        <!-- Chat Display (Fix: Added this to show responses) -->
+        <div id="response-container"
+             class="flex-1 overflow-auto p-4 space-y-4 rounded-2xl bg-white/80 backdrop-blur-sm shadow-md">
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                fetch("/ai/history")
+                    .then(response => response.json())
+                    .then(messages => {
+                        const container = document.getElementById("response-container");
+                        container.innerHTML = ""; // Clear previous content
+                        messages.forEach(msg => {
+                            let messageDiv = document.createElement("div");
+                            messageDiv.classList.add("p-2", "bg-gray-200", "rounded-md", "shadow-sm");
+                            messageDiv.textContent = msg;
+                            container.appendChild(messageDiv);
+                        });
+                    })
+                    .catch(error => console.error("Error loading chat history:", error));
+            });
+        </script>
+
+
+
+
+        <!-- Chat Input -->
+        <div class="sticky bottom-6 mx-4">
+            <form id="chatForm"
+                  class="flex items-center bg-white/90 backdrop-blur-sm rounded-xl p-2 shadow-xl"
+                  hx-post="/ai/generate"
+                  hx-target="#response-container"
+                  hx-swap="beforeend"
+                  hx-trigger="submit"
+                  hx-on="htmx:afterRequest: document.getElementById('message').value = '';">
+                <input id="message" name="message"
+                       class="bg-transparent outline-none text-slate-700 rounded-lg py-3 px-4 w-full"
+                       type="text" placeholder="Ask something..." required />
+                <button type="submit"
+                        class="bg-gradient-to-br from-indigo-500 to-blue-500 text-white rounded-lg p-2.5 ml-2">
+                    Send
+                </button>
+            </form>
+
+        </div>
+
+    </main>
+</div>
+
+</body>
+</html>

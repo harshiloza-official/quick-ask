@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+<body>
+<div th:fragment="responseFragment" hx-swap-oob="afterend:#recent-message-list"
+     class="flex items-center space-x-2 p-2 bg-gray-200 rounded-md shadow-md">
+    <div class="text-sm font-medium text-gray-700 truncate w-full" th:text="${message}">
+        MESSAGE
+    </div>
+</div>
+
+</body>
+</html>
